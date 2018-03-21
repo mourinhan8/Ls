@@ -1,0 +1,5 @@
+Directory1 rwx  19.3 Kb 21.03.2018 14:26:08
+Directory2 rwx  51.1 Kb 21.03.2018 14:25:55
+Directory3 rwx  44.3 Kb 21.03.2018 14:25:50
+File rwx  16.6 Kb 20.03.2018 23:23:45
+File1 rwx  13.4 Kb 20.03.2018 23:23:45
