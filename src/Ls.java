@@ -72,19 +72,9 @@ public class Ls {
             StringBuilder s = new StringBuilder();
             s.append(i.getName());
             if (l && h) {
-                s.append(" " + isRWX(i));
-                StringBuilder str = new StringBuilder();
-                Formatter fmt = new Formatter(str);
-                fmt.format("%8s", toNormal(size(i)));
-                s.append(str.toString());
-                s.append(" " + sim.format(i.lastModified()));
+                s.append(" " + isRWX(i) + " " + String.format("%8s", toNormal(size(i)) + " " + sim.format(i.lastModified())));
             } else if (l) {
-                s.append(" " + rwxToBit(i));
-                StringBuilder str = new StringBuilder();
-                Formatter fmt = new Formatter(str);
-                fmt.format("%12s", size(i));
-                s.append(str.toString());
-                s.append(" " + sim.format(i.lastModified()));
+                s.append(" " + rwxToBit(i)  + String.format("%12s", size(i)) + " " + sim.format(i.lastModified()));
             } else if (h) throw new IOException("-l?");
             res.add(s.toString());
         }
