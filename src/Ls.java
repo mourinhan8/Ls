@@ -82,7 +82,7 @@ public class Ls {
         return res;
     }
 
-    protected void output(String o, List<String> list) throws IOException {
+    void output(String o, List<String> list) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(o);
         StringBuilder s = new StringBuilder();
         for (String i : list)
@@ -94,21 +94,25 @@ public class Ls {
         Ls st = new Ls(new File(args[args.length - 1]));
         List<String> list = Arrays.asList(args);
         String regex = "(.*/)*.+\\.(?i)(txt)$";
-        if (args[0].compareTo("l") == 0 && args[1].compareTo("s") == 0) {
+        if (args[0].compareTo("ls") == 0) {
             boolean l = list.contains("-l");
             boolean h = list.contains("-h");
             boolean r = list.contains("-r");
             if (!list.contains("-o")) System.out.print(st.ls(l, h, r));
             else {
-                String name = list.get(list.indexOf("-o") + 1);
-                if (!name.matches(regex)) throw new IOException("You need to input correct file's name");
-                else {
-                    st.output(name, st.ls(l, h, r));
-                    System.out.println(name);
+                if (list.size() == list.indexOf("-o") + 3) {
+                    String name = list.get(list.indexOf("-o") + 1);
+                    if (!name.matches(regex)) throw new IOException("You need to input correct file's name");
+                    else {
+                        st.output(name, st.ls(l, h, r));
+                        System.out.println(name);
+                    }
                 }
+                st.output("output.txt", st.ls(l, h, r));
+                System.out.println("output.txt");
             }
         } else {
-            throw new IOException("No Data, run the program again");
+            throw new AssertionError();
         }
     }
 }
