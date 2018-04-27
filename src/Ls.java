@@ -70,12 +70,13 @@ public class Ls {
         SimpleDateFormat sim = new SimpleDateFormat(pattern);
         for (File i : work) {
             StringBuilder s = new StringBuilder();
+            Formatter fmt = new Formatter(s);
             s.append(i.getName());
             if (l && h) {
-                s.append(" " + isRWX(i) + " " + String.format("%8s", toNormal(size(i)) + " " + sim.format(i.lastModified())));
+                fmt.format(" " + isRWX(i) + " " + String.format("%8s", toNormal(size(i)) + " " + sim.format(i.lastModified())));
             } else if (l) {
-                s.append(" " + rwxToBit(i)  + String.format("%12s", size(i)) + " " + sim.format(i.lastModified()));
-            } else if (h) throw new IOException("-l?");
+                fmt.format(" " + rwxToBit(i) + String.format("%12s", size(i)) + " " + sim.format(i.lastModified()));
+            }
             res.add(s.toString());
         }
         if (r) Collections.reverse(res);
@@ -84,32 +85,36 @@ public class Ls {
 
     void output(String o, List<String> list) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(o);
-        StringBuilder s = new StringBuilder();
-        for (String i : list)
-            s.append(i + "\n");
-        fileOutputStream.write(s.toString().getBytes());
+        int n = list.size();
+        for (int i = 0; i < n; i++) {
+            fileOutputStream.write(list.get(i).getBytes());
+            if (i < n - 1)
+                fileOutputStream.write("\n".getBytes());
+        }
     }
 
     public static void main(String[] args) throws Exception {
         Ls st = new Ls(new File(args[args.length - 1]));
         List<String> list = Arrays.asList(args);
-        String regex = "(.*/)*.+\\.(?i)(txt)$";
         if (args[0].compareTo("ls") == 0) {
             boolean l = list.contains("-l");
             boolean h = list.contains("-h");
             boolean r = list.contains("-r");
-            if (!list.contains("-o")) System.out.print(st.ls(l, h, r));
-            else {
+            List<String> res = st.ls(l, h, r);
+            int n = res.size();
+            if (!list.contains("-o")) {
+                for (int i = 0; i < n; i++) {
+                    System.out.print(res.get(i));
+                    if (i < n - 1) System.out.println();
+                }
+            } else {
                 if (list.size() == list.indexOf("-o") + 3) {
                     String name = list.get(list.indexOf("-o") + 1);
-                    if (!name.matches(regex)) throw new IOException("You need to input correct file's name");
-                    else {
-                        st.output(name, st.ls(l, h, r));
-                        System.out.println(name);
-                    }
+                    st.output(name, st.ls(l, h, r));
+                    System.out.print(name);
                 }
-                st.output("output.txt", st.ls(l, h, r));
-                System.out.println("output.txt");
+                st.output("output", st.ls(l, h, r));
+                System.out.println("output");
             }
         } else {
             throw new AssertionError();
