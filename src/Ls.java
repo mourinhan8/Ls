@@ -73,9 +73,9 @@ public class Ls {
             Formatter fmt = new Formatter(s);
             s.append(i.getName());
             if (l && h) {
-                fmt.format(" " + isRWX(i) + " " + String.format("%8s", toNormal(size(i)) + " " + sim.format(i.lastModified())));
+                fmt.format(" " + isRWX(i) + "%8s " + sim.format(i.lastModified()), toNormal(size(i)));
             } else if (l) {
-                fmt.format(" " + rwxToBit(i) + String.format("%12s", size(i)) + " " + sim.format(i.lastModified()));
+                fmt.format(" " + rwxToBit(i) + "%12s " + sim.format(i.lastModified()), size(i));
             }
             res.add(s.toString());
         }
@@ -83,15 +83,22 @@ public class Ls {
         return res;
     }
 
+    private String Display(List<String> list) {
+        int n = list.size();
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            res.append(list.get(i));
+            if (i < n - 1)
+                res.append("\n");
+        }
+        return res.toString();
+    }
+
     void output(String o, List<String> list) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(o);
-        int n = list.size();
-        for (int i = 0; i < n; i++) {
-            fileOutputStream.write(list.get(i).getBytes());
-            if (i < n - 1)
-                fileOutputStream.write("\n".getBytes());
-        }
+        fileOutputStream.write(Display(list).getBytes());
     }
+
 
     public static void main(String[] args) throws Exception {
         Ls st = new Ls(new File(args[args.length - 1]));
@@ -101,12 +108,8 @@ public class Ls {
             boolean h = list.contains("-h");
             boolean r = list.contains("-r");
             List<String> res = st.ls(l, h, r);
-            int n = res.size();
             if (!list.contains("-o")) {
-                for (int i = 0; i < n; i++) {
-                    System.out.print(res.get(i));
-                    if (i < n - 1) System.out.println();
-                }
+                System.out.print(st.Display(res));
             } else {
                 if (list.size() == list.indexOf("-o") + 3) {
                     String name = list.get(list.indexOf("-o") + 1);
