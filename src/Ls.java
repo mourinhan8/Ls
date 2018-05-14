@@ -83,7 +83,7 @@ public class Ls {
         return res;
     }
 
-    private String Display(List<String> list) {
+    String Data(List<String> list) {
         int n = list.size();
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < n; i++) {
@@ -96,7 +96,7 @@ public class Ls {
 
     void output(String o, List<String> list) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(o);
-        fileOutputStream.write(Display(list).getBytes());
+        fileOutputStream.write(Data(list).getBytes());
     }
 
 
@@ -109,7 +109,7 @@ public class Ls {
             boolean r = list.contains("-r");
             List<String> res = st.ls(l, h, r);
             if (!list.contains("-o")) {
-                System.out.print(st.Display(res));
+                System.out.print(st.Data(res));
             } else {
                 if (list.size() == list.indexOf("-o") + 3) {
                     String name = list.get(list.indexOf("-o") + 1);

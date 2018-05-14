@@ -89,6 +89,28 @@ public class LsTest {
     }
 
     @Test
+    public void Data() throws IOException {
+        Ls st = new Ls(new File("Directory"));
+        assertEquals("Directory1\nDirectory2\nDirectory3\nFile\nFile1",
+                st.Data(st.ls(false, false, false)));
+        assertEquals("File1\nFile\nDirectory3\nDirectory2\nDirectory1",
+                st.Data(st.ls(false, false, true)));
+        assertEquals("Directory1\nDirectory2\nDirectory3\nFile\nFile1",
+                st.Data(st.ls(false, true, false)));
+        assertEquals("File1 111       13737 20.03.2018 23:23:45\n" +
+                        "File 111       17011 20.03.2018 23:23:45\n" +
+                        "Directory3 111       45323 21.03.2018 14:25:50\n" +
+                        "Directory2 111       52319 21.03.2018 14:25:55\n" +
+                        "Directory1 111       19717 21.03.2018 14:26:08",
+                st.Data(st.ls(true, false, true)));
+        assertEquals("Directory1 rwx 19.3 Kb 21.03.2018 14:26:08\n" +
+                "Directory2 rwx 51.1 Kb 21.03.2018 14:25:55\n" +
+                "Directory3 rwx 44.3 Kb 21.03.2018 14:25:50\n" +
+                "File rwx 16.6 Kb 20.03.2018 23:23:45\n" +
+                "File1 rwx 13.4 Kb 20.03.2018 23:23:45", st.Data(st.ls(true, true, false)));
+    }
+
+    @Test
     public void output() throws Exception {
         Ls st = new Ls(new File("Directory"));
         st.output("output.txt", st.ls(true, true, false));
