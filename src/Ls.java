@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -83,22 +81,19 @@ public class Ls {
         return res;
     }
 
-    String Data(List<String> list) {
-        int n = list.size();
-        StringBuilder res = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            res.append(list.get(i));
-            if (i < n - 1)
-                res.append("\n");
-        }
-        return res.toString();
-    }
 
     void output(String o, List<String> list) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(o);
-        fileOutputStream.write(Data(list).getBytes());
+        PrintStream out;
+        int n = list.size();
+        if (o == null)
+            out = System.out;
+        else {
+            out = new PrintStream(new File(o));
+        }
+        for (String aList : list) {
+            out.println(aList);
+        }
     }
-
 
     public static void main(String[] args) throws Exception {
         Ls st = new Ls(new File(args[args.length - 1]));
@@ -108,17 +103,16 @@ public class Ls {
             boolean h = list.contains("-h");
             boolean r = list.contains("-r");
             List<String> res = st.ls(l, h, r);
+            String name;
             if (!list.contains("-o")) {
-                System.out.print(st.Data(res));
+                name = null;
             } else {
                 if (list.size() == list.indexOf("-o") + 3) {
-                    String name = list.get(list.indexOf("-o") + 1);
-                    st.output(name, st.ls(l, h, r));
-                    System.out.print(name);
+                    name = list.get(list.indexOf("-o") + 1);
                 }
-                st.output("output", st.ls(l, h, r));
-                System.out.println("output");
+                name = "output";
             }
+            st.output(name, res);
         } else {
             throw new AssertionError();
         }
